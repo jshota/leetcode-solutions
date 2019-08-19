@@ -1,3 +1,4 @@
 # no office files
-#*.xlsx
+*.xlsx
+*.xlsx*
 *.docx
