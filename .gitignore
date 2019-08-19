@@ -2,3 +2,6 @@
 *.xlsx
 *.xlsx*
 *.docx
+
+# no shell files
+*.sh
