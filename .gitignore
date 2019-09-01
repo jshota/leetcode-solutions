@@ -8,3 +8,6 @@
 
 # mac no DS_Store
 *.DS_Store
+
+# no test file
+test.py
