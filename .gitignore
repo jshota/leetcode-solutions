@@ -5,3 +5,6 @@
 
 # no shell files
 *.sh
+
+# mac no DS_Store
+*.DS_Store
