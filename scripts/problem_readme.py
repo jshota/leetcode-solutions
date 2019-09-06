@@ -95,8 +95,8 @@ class Readme:
             f.write('- Frequency: /5\n\n')
 
             f.write('## Links\n\n')
-            f.write('[Leetcode]({})\n'.format(self.url))
-            f.write('[Blog](http://206.81.6.248:12306/leetcode/{}/description)\n'.format(self.title.lower().replace(' ', '-')))
+            f.write('[Leetcode]({})\n\n'.format(self.url))
+            f.write('[Blog](http://206.81.6.248:12306/leetcode/{}/description)\n\n'.format(self.title.lower().replace(' ', '-')))
             f.write('## Description\n\n' + '> Description here...\n\n')
             f.write('## Python code\n\n')
             f.write('```python\n\n' + '```\n\n')
