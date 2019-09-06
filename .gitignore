@@ -3,8 +3,8 @@
 *.xlsx*
 *.docx
 
-# no shell files
-*.sh
+# no script folder
+# scripts/
 
 # mac no DS_Store
 *.DS_Store
