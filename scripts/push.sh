@@ -17,6 +17,6 @@ case $input in
     ;;
 esac
 
-git add . 
+git add ../. 
 git commit -m "feat: $input"
 git push origin master
