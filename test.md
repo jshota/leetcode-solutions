@@ -2,10 +2,12 @@ Given an array of meeting time intervals consisting of start and end times <code
 
 <b>Example 1:</b>
 
-<b>Input:</b> <code>[[0,30],[5,10],[15,20]]</code><b>Output:</b> false
+<b>Input:</b> <code>[[0,30],[5,10],[15,20]]</code>  
+<b>Output:</b> false
 
 <b>Example 2:</b>
 
-<b>Input:</b> [[7,10],[2,4]]<b>Output:</b> true
+<b>Input:</b> [[7,10],[2,4]]  
+<b>Output:</b> true
 
 <strong>NOTE:</strong> input types have been changed on April 15, 2019. Please reset to default code definition to get new method signature.
