@@ -123,7 +123,6 @@ class Markdown:
     def __init__(self, id_):
         """
         :param id_: problem number
-        :param table_instance: problems table instance
         """
         self.id_ = id_
 
