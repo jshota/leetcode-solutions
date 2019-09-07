@@ -49,6 +49,7 @@ class Problem:
                         value = value.replace(' [', ' <code>[') + '</code>'
                     value = value.replace('\r\n', '')
                     value = value.replace('<b>Output', '  \n<b>Output')
+                    value = value.replace('<strong>Output', '  \n<strong>Output')
                 f.write(value)
             f.write('\n\n')
 
