@@ -8,11 +8,11 @@ All the solutions are written in Python.
 
 ## Before coding
 
-1. Clarified the input and output.
-2. Clarified the empty case.
+1. What are the inputs and outputs?
+2. Think about the empty case.
 3. Ask the definition of ambiguity, if any.
 4. Figure out if the linklist contains any cycle.
-5. Expected time complexity.
+5. Expected time complexity?
 6. Give some examples.
 
 ## Links
