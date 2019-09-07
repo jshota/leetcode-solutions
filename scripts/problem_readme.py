@@ -30,6 +30,10 @@ class Problem:
         self.python = ''
 
     def write_description(self, f):
+        """
+        capture the problem's description from a website
+        and write it into a md file.
+        """
         target = self.blog_url
         request = requests.get(url = target)
         html = request.text
@@ -54,6 +58,10 @@ class Problem:
             f.write('\n\n')
 
     def write_frequency(self, f):
+        """
+        capture the problem's frequency from a website
+        and display it as emoji in a md file.
+        """
         target = Config.blog_search_url + self.id_
         request = requests.get(url = target)
         html = request.text
@@ -107,9 +115,9 @@ class TableContent:
             self.table_item[p.id_] = p
         return self.table_item
 
-class Readme:
+class Markdown:
     """
-    Generate Readme file for one problem.
+    Generate Markdown file for a problem.
     """
 
     def __init__(self, id_):
@@ -127,12 +135,10 @@ class Readme:
         self.lock = self.item.lock
         self.difficulty = self.item.difficulty
         
-    def create_readme(self):
+    def create_markdown(self):
         """
-        create the readme file
-        :return:
+        create the markdown file.
         """
-
         file_path = Config.local_path + '/pending/' + self.id_ + '. ' + self.title + '.md'
         with open(file_path, 'w') as f:
             f.write('# ' + self.id_ + '. ' + self.title + '\n\n')
@@ -153,8 +159,7 @@ class Readme:
 
 def main():
     id_ = input("Problem Number: ")
-    # table_instance = TableContent().get_leetcode_problems()
-    Readme(id_).create_readme()
+    Markdown(id_).create_markdown()
 
 if __name__ == '__main__':
     main()
