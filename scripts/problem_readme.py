@@ -2,11 +2,15 @@ import requests
 import os
 import json
 import time
+from lxml import html
+from bs4 import BeautifulSoup
 
 class Config:
     local_path = '/home/jing/Dropbox/Learning/Leetcode'
     github_leetcode_url = 'https://github.com/jshota/leetcode-solutions'
     leetcode_url = 'https://leetcode.com/problems/'
+    blog_url = 'http://206.81.6.248:12306/leetcode/'
+    blog_search_url = blog_url + 'search/'
 
 class Problem:
     """
@@ -19,9 +23,49 @@ class Problem:
         self.url = url
         self.lock = lock
         self.difficulty = difficulty
-
+        self.frequency = 0.
+        self.blog_url = Config.blog_url + '{}/description'.format(self.title.lower().replace(' ', '-'))
+        
         # solution url
         self.python = ''
+
+    def write_description(self, f):
+        target = self.blog_url
+        request = requests.get(url = target)
+        html = request.text
+        div_bf = BeautifulSoup(html, features="lxml")
+        div = div_bf.find_all('div', class_ = 'markdown-body')
+        p_bf = BeautifulSoup(str(div[0]), features="lxml")
+        p = p_bf.find_all(['p','pre'])
+
+        for i, item in enumerate(p):
+            for value in item.contents:
+                # convert to value from tag
+                value = str(value)
+                if i > 0:
+                    # reformat examples section
+                    # sometimes it would miss <code> syntax on both sides of a list
+                    if value.find(' [') != -1:
+                        value = value.replace(' [', ' <code>[') + '</code>'
+                    value = value.replace('\r\n', '')
+                    value = value.replace('<b>Output', '  \n<b>Output')
+                f.write(value)
+            f.write('\n\n')
+
+    def write_frequency(self, f):
+        target = Config.blog_search_url + self.id_
+        request = requests.get(url = target)
+        html = request.text
+        div_bf = BeautifulSoup(html, features="lxml")
+        div = div_bf.find_all('div', class_ = 'progress-bar progress-bar-success')
+        self.frequency = float(div[0].get('aria-valuenow')) / float(div[0].get('aria-valuemax')) * 10
+        for i in range(10):
+            if i <= self.frequency + 1:
+                f.write(':fire:')
+            else:
+                f.write(':snowflake:')
+        f.write('\n\n')
+
 
 class TableContent:
     """
@@ -67,7 +111,7 @@ class Readme:
     Generate Readme file for one problem.
     """
 
-    def __init__(self, id_, table_instance):
+    def __init__(self, id_):
         """
         :param id_: problem number
         :param table_instance: problems table instance
@@ -75,29 +119,32 @@ class Readme:
         self.id_ = id_
 
         # initial problem's attributes
-        item = table_instance[self.id_]
-        self.title = item.title
-        self.url = item.url
-        self.lock = item.lock
-        self.difficulty = item.difficulty
+        table_instance = TableContent().get_leetcode_problems()
+        self.item = table_instance[self.id_]
+        self.title = self.item.title
+        self.url = self.item.url
+        self.lock = self.item.lock
+        self.difficulty = self.item.difficulty
         
     def create_readme(self):
         """
         create the readme file
         :return:
         """
-        file_path = Config.local_path + '/pending/' + self.id_ + '.' + self.title + '.md'
+
+        file_path = Config.local_path + '/pending/' + self.id_ + '. ' + self.title + '.md'
         with open(file_path, 'w') as f:
-            f.write('# ' + self.id_ + '.' + self.title + '\n\n')
+            f.write('# ' + self.id_ + '. ' + self.title + '\n\n')
             f.write('## Tags\n\n')
             f.write('- ' + self.lock + '\n')
             f.write('- ' + self.difficulty + '\n')
-            f.write('- Frequency: /5\n\n')
-
+            f.write('- Frequency: ')
+            self.item.write_frequency(f)
             f.write('## Links\n\n')
             f.write('[Leetcode]({})\n\n'.format(self.url))
-            f.write('[Blog](http://206.81.6.248:12306/leetcode/{}/description)\n\n'.format(self.title.lower().replace(' ', '-')))
-            f.write('## Description\n\n' + '> Description here...\n\n')
+            f.write('[Blog]({})\n\n'.format(self.item.blog_url))
+            f.write('## Description\n\n')
+            self.item.write_description(f)
             f.write('## Python code\n\n')
             f.write('```python\n\n' + '```\n\n')
             f.write('## Animation\n\n' + 'None\n\n')
@@ -105,8 +152,8 @@ class Readme:
 
 def main():
     id_ = input("Problem Number: ")
-    table_instance = TableContent().get_leetcode_problems()
-    Readme(id_, table_instance).create_readme()
+    # table_instance = TableContent().get_leetcode_problems()
+    Readme(id_).create_readme()
 
 if __name__ == '__main__':
     main()
