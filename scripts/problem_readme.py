@@ -50,7 +50,9 @@ class Problem:
                     # reformat examples section
                     # sometimes it would miss <code> syntax on both sides of a list
                     if value.find(' [') != -1:
-                        value = value.replace(' [', ' <code>[') + '</code>'
+                        value = value.replace(' [', ' <code>[')
+                        value = value.replace('] ', ']</code>')
+                        value = value.replace('].', ']</code>.')
                     value = value.replace('\r\n', '')
                     value = value.replace('<b>Output', '  \n<b>Output')
                     value = value.replace('<strong>Output', '  \n<strong>Output')
