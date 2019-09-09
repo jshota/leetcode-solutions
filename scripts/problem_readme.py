@@ -156,7 +156,7 @@ class Markdown:
             self.item.write_description(f)
             f.write('## Python code\n\n')
             f.write('```python\n\n' + '```\n\n')
-            f.write('## Animation\n\n' + 'None\n\n')
+            f.write('## Visualization\n\n' + 'None\n\n')
             f.write('## Reference\n\n' + 'None\n')
 
 def main():
