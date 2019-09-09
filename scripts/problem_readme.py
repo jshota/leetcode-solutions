@@ -6,7 +6,7 @@ from lxml import html
 from bs4 import BeautifulSoup
 
 class Config:
-    local_path = '/home/jing/Dropbox/Learning/Leetcode'
+    local_path = '..'
     github_leetcode_url = 'https://github.com/jshota/leetcode-solutions'
     leetcode_url = 'https://leetcode.com/problems/'
     blog_url = 'http://206.81.6.248:12306/leetcode/'
