@@ -2,15 +2,60 @@ import requests
 import os
 import json
 import time
+from scipy import io
 from lxml import html
 from bs4 import BeautifulSoup
 
 class Config:
     local_path = '..'
+    local_gifs_path = local_path + '/gifs/'
+    local_pending_path = local_path + '/pending/'
+    local_data_file_name = 'data.mat'
+    holder_gif = 'pending gif...'
+    
     github_leetcode_url = 'https://github.com/jshota/leetcode-solutions'
+    github_gif_url = 'https://github.com/jshota/leetcode-solutions/blob/master/gifs/'
+    
     leetcode_url = 'https://leetcode.com/problems/'
+    
     blog_url = 'http://206.81.6.248:12306/leetcode/'
     blog_search_url = blog_url + 'search/'
+
+class Data:
+    """
+    Store and load local data
+    """
+    def __init__(self):
+        if os.path.isfile(Config.local_data_file_name):
+            self.data = io.loadmat(Config.local_data_file_name)
+        else:
+            self.data = {}
+
+    def write(self, key, value):
+        """
+        :type key: str
+        :param value: the value needs to store
+        """
+        self.data[key] = value
+        io.savemat(Config.local_data_file_name, self.data)
+
+    def read(self, key):
+        """
+        :type key: str
+        :return: any value
+        """
+        if key in self.data.keys():
+            return self.data[key]
+        else:
+            return None
+
+    def delete(self, key):
+        """
+        :type key: str
+        """
+        if key in self.data.keys():
+            del self.data[key]
+            io.savemat(Config.local_data_file_name, self.data)
 
 class Problem:
     """
@@ -77,7 +122,6 @@ class Problem:
             else:
                 f.write(':snowflake:')
         f.write('\n\n')
-
 
 class TableContent:
     """
@@ -156,12 +200,55 @@ class Markdown:
             self.item.write_description(f)
             f.write('## Python code\n\n')
             f.write('```python\n\n' + '```\n\n')
-            f.write('## Visualization\n\n' + 'None\n\n')
+            f.write('## Visualization\n\n' + Config.holder_gif + '\n\n')
             f.write('## Reference\n\n' + 'None\n')
 
+class Gifs:
+    '''
+    used to attach new existed gifs to corresponding md files
+    '''
+
+    def __init__(self):
+        # store the file name of all processed gifs
+        data = Data()
+        self.existed_gifs = data.read('gifs')
+        self.all_gifs = os.listdir(Config.local_gifs_path)
+
+    def list_of_new_gifs(self):
+        '''
+        return a list contains all new existed gif's file names
+        '''
+        result = self.all_gifs
+        data = Data()
+        data.write('gifs', result)
+        if self.existed_gifs:
+            for i in self.existed_gifs:
+                result.remove(i)
+        return result
+
+    def write_new_gifs_to_files(self):
+        '''
+        write the url of all new gifs to corresponding files
+        '''
+        for i in self.list_of_new_gifs():
+            file_path = Config.local_pending_path + i.replace('.gif', '.md')
+            data = ''
+            with open(file_path, 'r+') as f:
+                for line in f.readlines():
+                    if (line.find(Config.holder_gif) == 0):
+                        url = Config.github_gif_url + i.replace(' ', '%20')
+                        line = '![gif]({})\n'.format(url)
+                    data += line
+            with open(file_path, 'r+') as f:
+                f.writelines(data)
+
 def main():
-    id_ = input("Problem Number: ")
-    Markdown(id_).create_markdown()
+    id_ = input("Problem Number (or type 'gif' to insert gif url): ")
+    if id_ == 'gif':
+        gifs = Gifs()
+        gifs.write_new_gifs_to_files()
+    else:
+        Markdown(id_).create_markdown()
 
 if __name__ == '__main__':
     main()
