@@ -221,8 +221,11 @@ class Gifs:
         result = self.all_gifs
         data = Data()
         data.write('gifs', result)
-        if self.existed_gifs:
+        if self.existed_gifs is not None:
             for i in self.existed_gifs:
+                # delete all the blanks that added to the end of the string by conversion issues
+                while i[-1] == ' ':
+                    i = i[:-1]
                 result.remove(i)
         return result
 
