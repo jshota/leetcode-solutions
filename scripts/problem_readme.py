@@ -204,20 +204,21 @@ class Markdown:
             f.write('## Reference\n\n' + 'None\n')
 
 class Gifs:
-    '''
+    """
     used to attach new existed gifs to corresponding md files
-    '''
+    """
 
     def __init__(self):
         # store the file name of all processed gifs
         data = Data()
         self.existed_gifs = data.read('gifs')
         self.all_gifs = os.listdir(Config.local_gifs_path)
+        self.new_gifs = []
 
-    def list_of_new_gifs(self):
-        '''
+    def get_list_of_new_gifs(self):
+        """
         return a list contains all new existed gif's file names
-        '''
+        """
         result = self.all_gifs
         data = Data()
         data.write('gifs', result)
@@ -227,13 +228,13 @@ class Gifs:
                 while i[-1] == ' ':
                     i = i[:-1]
                 result.remove(i)
-        return result
+        self.new_gifs = result
 
     def write_new_gifs_to_files(self):
-        '''
+        """
         write the url of all new gifs to corresponding files
-        '''
-        for i in self.list_of_new_gifs():
+        """
+        for i in self.new_gifs:
             file_path = Config.local_pending_path + i.replace('.gif', '.md')
             data = ''
             with open(file_path, 'r+') as f:
@@ -245,11 +246,25 @@ class Gifs:
             with open(file_path, 'r+') as f:
                 f.writelines(data)
 
+    def move_to_solved(self):
+        """
+        move the ready-to-move file to the solved folder.
+        """
+        for i in self.new_gifs:
+            cur_file_path = Config.local_pending_path + i.replace('.gif', '.md')
+            tar_folder_path = Config.local_path + '/solved'
+            # path should be within double quotations if it contains blanks
+            command = 'mv "' + cur_file_path + '" "' + tar_folder_path + '"'
+            os.system(command)
+
 def main():
     id_ = input("Problem Number (or type 'gif' to insert gif url): ")
     if id_ == 'gif':
         gifs = Gifs()
+        gifs.get_list_of_new_gifs()
         gifs.write_new_gifs_to_files()
+        gifs.move_to_solved()
+
     else:
         Markdown(id_).create_markdown()
 
