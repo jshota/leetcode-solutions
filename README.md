@@ -1,6 +1,6 @@
 # Leetcode Solutions
 
-## Introdcution
+## Introduction
 
 Recording the coding path.
 
