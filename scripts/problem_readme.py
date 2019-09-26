@@ -13,7 +13,7 @@ class Config:
     local_data_file_name = 'data.mat'
     holder_gif = 'pending gif...'
     
-    github_leetcode_url = 'https://github.com/jshota/leetcode-solutions'
+    github_leetcode_url = 'https://github.com/terry987654951/LeetCode-Journey'
     github_gif_url = 'https://github.com/jshota/leetcode-solutions/blob/master/gifs/'
     
     leetcode_url = 'https://leetcode.com/problems/'
@@ -69,7 +69,7 @@ class Problem:
         self.lock = lock
         self.difficulty = difficulty
         self.frequency = 0.
-        self.blog_url = Config.blog_url + '{}/description'.format(self.title.lower().replace(' ', '-').replace('()',''))
+        self.blog_url = Config.blog_url + '{}/description'.format(self.title.lower().replace(' ', '-').replace('()','').replace('(x)','x'))
         
         # solution url
         self.python = ''
@@ -200,8 +200,8 @@ class Markdown:
             self.item.write_description(f)
             f.write('## Python code\n\n')
             f.write('```python\n\n' + '```\n\n')
-            f.write('## Visualization\n\n' + Config.holder_gif + '\n\n')
-            f.write('## Reference\n\n' + 'None\n')
+            # f.write('## Visualization\n\n' + Config.holder_gif + '\n\n')
+            f.write('## Reference\n\n' + Config.github_gif_url + '\n')
 
 class Gifs:
     """
@@ -212,7 +212,7 @@ class Gifs:
         # store the file name of all processed gifs
         data = Data()
         self.existed_gifs = data.read('gifs')
-        self.all_gifs = os.listdir(Config.local_gifs_path)
+        # self.all_gifs = os.listdir(Config.local_gifs_path)
         self.new_gifs = []
 
     def get_list_of_new_gifs(self):
@@ -250,19 +250,21 @@ class Gifs:
         """
         move the ready-to-move file to the solved folder.
         """
-        for i in self.new_gifs:
-            cur_file_path = Config.local_pending_path + i.replace('.gif', '.md')
+        filename_list = os.listdir(Config.local_pending_path)
+        for i in filename_list:
+            print(i)
+            cur_file_path = Config.local_pending_path + i
             tar_folder_path = Config.local_path + '/solved'
             # path should be within double quotations if it contains blanks
             command = 'mv "' + cur_file_path + '" "' + tar_folder_path + '"'
             os.system(command)
 
 def main():
-    id_ = input("Problem Number (or type 'gif' to insert gif url): ")
-    if id_ == 'gif':
+    id_ = input("Problem Number (or type 'move' to move the file to the solved folder): ")
+    if id_ == 'move':
         gifs = Gifs()
-        gifs.get_list_of_new_gifs()
-        gifs.write_new_gifs_to_files()
+        # gifs.get_list_of_new_gifs()
+        # gifs.write_new_gifs_to_files()
         gifs.move_to_solved()
 
     else:
